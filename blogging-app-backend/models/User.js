@@ -50,10 +50,12 @@ userSchema.methods.toUserResponse = function () {
 userSchema.methods.toProfileJSON = function (user) {
   return {
     username: this.username,
-    bio: this.bio,
+    bio:this.bio,
     image: this.image,
-    following: 10,
+    following:10
   };
 };
+
+
 
 module.exports = mongoose.model("User", userSchema);

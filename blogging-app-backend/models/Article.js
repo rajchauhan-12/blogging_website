@@ -51,13 +51,15 @@ const articleSchema = new mongoose.Schema(
 
 articleSchema.plugin(uniqueValidator);
 
+
 //middleware to run before saving the article
 
-articleSchema.pre("save", function (next) {
-  this.slug = slugify(this.title, { lower: true, replacement: "-" });
+articleSchema.pre('save', function(next){
 
-  next();
-});
+    this.slug = slugify(this.title, {lower:true, replacement:'-'});
+
+    next();
+} )
 
 //user is the logged in user
 articleSchema.methods.toArticleResponse = async function (user) {
@@ -74,6 +76,22 @@ articleSchema.methods.toArticleResponse = async function (user) {
     favouritesCount: this.favouritesCount,
     author: authorObj.toProfileJSON(user),
   };
+};
+
+articleSchema.methods.addComment = async function (commentId) {
+
+  if(this.comments.indexOf(commentId) === -1){
+    this.comments.push(commentId);
+  }
+  return this.save();
+};
+
+
+articleSchema.methods.removeComment = async function (commentId) {
+  if(this.comments.indexOf(commentId) !== -1){
+    this.comments.remove(commentId);
+  }
+  return this.save();
 };
 
 module.exports = mongoose.model("Article", articleSchema);
